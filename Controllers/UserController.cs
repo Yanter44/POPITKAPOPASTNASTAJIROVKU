@@ -48,6 +48,54 @@ namespace POPITKAPOPASTNASTAJIROVKU.Controllers
             return Ok(books);
         }
 
+        [SwaggerOperation(Summary = "Найти книгу по ISBN", Description = "Метод возвращает книгу по введенному isbn")]
+        [HttpGet("books/isbn/{isbn}")]
+        public async Task<ActionResult> GetBookPoIsbn([FromRoute] int isbn)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return Ok(book);
+        }
+        [SwaggerOperation(Summary = "Изменить книгу", Description = "Метод Изменяет книгу ")]
+        [HttpPut("api/books/{isbn}/edit")]
+        public async Task<ActionResult<Book>> EditBook(int isbn, [FromBody] string EditDescription)
+        {
+            var book = _context.Books.FirstOrDefault(b => b.ISBN == isbn);
+            if(book == null) 
+            { 
+               return NotFound();
+            }
+            book.Description = EditDescription;
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+            return Ok(book);
+        }
+        [SwaggerOperation(Summary = "Удалить книгу", Description = "Метод Изменяет книгу ")]
+        [HttpDelete("api/books/{id}")]
+        public async Task<ActionResult<Book>> Delete([FromRoute] int id)
+        {
+            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            _context.Books.Remove(book);
+           var allbooks = _context.Books.OrderBy(r => r.Id).ToList();
+            for(int i = 0; i < allbooks.Count; i++) 
+            {
+                allbooks[i].Id = i + 1;
+            }
+            await _context.SaveChangesAsync();
+            return Ok(book);
+        }
+
+
+
+
 
     }
 }

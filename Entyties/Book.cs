@@ -7,7 +7,6 @@ namespace POPITKAPOPASTNASTAJIROVKU.Entyties
     public class Book
     {
         [Key]
-       
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         public int Id { get; set; } 
